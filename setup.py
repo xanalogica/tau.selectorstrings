@@ -31,11 +31,10 @@ setup(
     version=VERSION,
 
     # Descriptions for Potential Users of Distribution
-    description='',
+    description='ZCML Directive to Define Configuration Strings for Dropdown Lists',
     long_description=(
         read('README.rst')
-        + '\n\n' +
-        read('CHANGES.txt')
+        + '\n' + read('CHANGES.txt')
     ),
 
     # Location of Stuff Within Distribution
