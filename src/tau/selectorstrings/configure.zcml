@@ -1,0 +1,29 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="tau.selectorstrings">
+
+    <!-- ######################################################################
+         #
+         # With the "includeDependencies" directive, you no longer have to add
+         # an explicit <include package=new.dependency> to your toplevel
+         # site.zcml file for every new dependency of this package.
+         #
+         # The "includeDependencies" directive, part of the z3c.autoinclude
+         # component, searches through the dependencies in your setup.py file
+         # (install_requires=), and includes the ZCML files in those packages
+         # that it finds.  Inclusion order matches the order in the setup.py
+         # file.
+         #
+         # You can pass a path for the package you want to include dependencies
+         # for, but typically you pass in the current package, as follows:
+         ###################################################################### -->
+
+         <includeDependencies package="." />
+
+         <selectorstring
+             cluster="beta"
+             label="Beta Path"
+             value="/beta/"
+             />
+
+</configure>

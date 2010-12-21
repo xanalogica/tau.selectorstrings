@@ -1,0 +1,40 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta">
+
+    <!--
+      -->
+
+    <include package="z3c.autoinclude" file="meta.zcml" />
+
+    <meta:directives
+        namespace="http://namespaces.zope.org/zope">
+
+        <!--
+          -->
+
+        <meta:directive
+            name="selectorstring"
+            schema=".interfaces.ISelectorStringDirective"
+            handler=".zcml_directives.selectorstring_SimpleDirectiveHandler"
+            />
+
+        <!--
+          -->
+
+        <meta:complexDirective
+            name="selectorcluster"
+            schema=".interfaces.ISelectorClusterDirective"
+            handler=".zcml_directives.selectorcluster_ComplexDirectiveHandler"
+            >
+
+            <meta:subdirective
+                name="selectorstring"
+                schema=".interfaces.ISelectorStringSubdirective"
+                />
+
+        </meta:complexDirective>
+
+    </meta:directives>
+
+</configure>
