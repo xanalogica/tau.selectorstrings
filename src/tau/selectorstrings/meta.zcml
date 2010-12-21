@@ -2,39 +2,45 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:meta="http://namespaces.zope.org/meta">
 
-    <!--
-      -->
+    <!-- ######################################################################
+         # The z3c.autoinclude has nothing to do with the stringselectors ZCML
+         # directives.  It simply is a convenience that automatically includes
+         # the ZCML configuration files of any packages listed as requirements
+         # in the tau.selectorstrings setup.py file.
+         ###################################################################### -->
 
-    <include package="z3c.autoinclude" file="meta.zcml" />
+         <include package="z3c.autoinclude" file="meta.zcml" />
 
-    <meta:directives
-        namespace="http://namespaces.zope.org/zope">
+         <meta:directives
+             namespace="http://namespaces.zope.org/zope">
 
-        <!--
-          -->
+             <!-- ##################################################
+                  # Declare a new simple ZCML directive.
+                  ################################################## -->
 
-        <meta:directive
-            name="selectorstring"
-            schema=".interfaces.ISelectorStringDirective"
-            handler=".zcml_directives.selectorstring_SimpleDirectiveHandler"
-            />
+                  <meta:directive
+                      name="selectorstring"
+                      schema=".interfaces.ISelectorStringDirective"
+                      handler=".zcml_directives.selectorstring_SimpleDirectiveHandler"
+                      />
 
-        <!--
-          -->
+             <!-- ##################################################
+                  # Declare a new complex (nested) ZCML directive.
+                  ################################################## -->
 
-        <meta:complexDirective
-            name="selectorcluster"
-            schema=".interfaces.ISelectorClusterDirective"
-            handler=".zcml_directives.selectorcluster_ComplexDirectiveHandler"
-            >
+                  <meta:complexDirective
+                      name="selectorcluster"
+                      schema=".interfaces.ISelectorClusterDirective"
+                      handler=".zcml_directives.selectorcluster_ComplexDirectiveHandler"
+                      >
 
-            <meta:subdirective
-                name="selectorstring"
-                schema=".interfaces.ISelectorStringSubdirective"
-                />
+                      <meta:subdirective
+                          name="selectorstring"
+                          schema=".interfaces.ISelectorStringSubdirective"
+                          />
 
-        </meta:complexDirective>
+                  </meta:complexDirective>
 
-    </meta:directives>
+         </meta:directives>
 
 </configure>

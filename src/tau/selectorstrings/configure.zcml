@@ -3,7 +3,6 @@
     i18n_domain="tau.selectorstrings">
 
     <!-- ######################################################################
-         #
          # With the "includeDependencies" directive, you no longer have to add
          # an explicit <include package=new.dependency> to your toplevel
          # site.zcml file for every new dependency of this package.
@@ -19,11 +18,5 @@
          ###################################################################### -->
 
          <includeDependencies package="." />
-
-         <selectorstring
-             cluster="beta"
-             label="Beta Path"
-             value="/beta/"
-             />
 
 </configure>

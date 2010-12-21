@@ -5,6 +5,53 @@
 Introduction
 ============
 
+The purpose of the distribution is two-fold; to provide a useful way of
+configuring clusters of strings to be presented in a dropdown list, and to
+teach others how to create new ZCML directives.  The code has been carefully
+documented to make clear how it works.
+
+My need for selectorstrings comes from another component I'm designing for
+presenting collections of version-controlled files as a Zope folder.  I wanted
+to allow the developer who adds an instance of this document folder, using the
+ZMI (Zope Management Interface), to pick from a list of directories.  I did
+not want them to be able to pick arbitrary directories through the ZMI as
+security precaution.
+
+This resulted in the following ZCML directive::
+
+    <selectorstring cluster="sitedocs"
+        label="Public Documents"
+        value="/usr/share/public/"
+        />
+
+    <selectorstring cluster="sitedocs"
+        label="Family Photos"
+        value="/home/jeff/photos/"
+        />
+
+And you can add more, using the same or difference cluster name and the
+strings will be available as a Zope vocabulary under that cluster name.
+However each such simple directive repeats the cluster name repeatedly.
+
+So next I created a complex (nested) directive to factor out the cluster
+name::
+
+    <selectorcluster name="sitedocs">
+
+        <selectorstring
+            label="Public Documents"
+            value="/usr/share/public/"
+            />
+
+        <selectorstring
+            label="Family Photos"
+            value="/home/jeff/photos/"
+            />
+
+    </selectorcluster>
+
+The rest of this component shows the implementation of each directive.
+
 
 Steps to Creating a Simple ZCML Directive
 =========================================
@@ -21,36 +68,33 @@ pieces:
   3. the schema
   4. its directive handler
 
-The piece that ties these all together is the declaration of the directive in
-your *meta.zcml* file::
+The piece that ties these all together is the declaration of the (simple-kind
+of) directive in the *meta.zcml* file::
 
-    <meta:directives namespace="http://namespaces.zope.org/zope">
-
-        <meta:directive
-            name="selector"
-            schema=.metadirectives.IAdapterDirective
-            handler=".metaconfigure.adapterDirective"
-            />
-
-    </meta:directives>
+    <meta:directive
+        name="selectorstring"
+        schema=".interfaces.ISelectorStringDirective"
+        handler=".zcml_directives.selectorstring_SimpleDirectiveHandler"
+        />
 
 That takes care of declaring the name of the new directive and placing that
-name into the "zope" namespace.  You could have placed it into the "browser"
+name into the "zope" namespace.  It could have placed it into the "browser"
 namespace or some other space that would make organizational sense.
 
-To define the new directive's schema or set of NAME=VALUEs that it
-accepts/requires, you create an interface definition.
+To declare a complex-kind of directive::
 
- FILE: metadirectives.py
- |
-PythonIdentifier
-GlobalObject
-Tokens
-Path
-Bool
-MessageID
- |
+    <meta:complexDirective
+        name="selectorcluster"
+        schema=".interfaces.ISelectorClusterDirective"
+        handler=".zcml_directives.selectorcluster_ComplexDirectiveHandler"
+        >
 
+        <meta:subdirective
+            name="selectorstring"
+            schema=".interfaces.ISelectorStringSubdirective"
+            />
+
+    </meta:complexDirective>
 
 
 Using Your ZCML Directive
@@ -62,19 +106,24 @@ file included into the top-level site.zcml configuration file::
     <configure
         xmlns="http://namespaces.zope.org/zope">
 
-        <selection
-            cluster="sitedocs"
-            label="Jeff's Site Docs"
-            value="/home/jeff/sitedocs/"
-            />
-
-        <selection
-            cluster="sitedocs"
-            label="Mary's Site Docs"
-            value="/home/mary/sitedocs/"
+        <selectorstring cluster="sitedocs"
+            label="Public Documents"
+            value="/usr/share/public/"
             />
 
     </configure>
 
-Before the directive is recognized you must be sure that its definition in
-your meta.zcml gets included into the top-level site.zcml file.
+Before the directive is recognized you **must** be sure that its definition in
+your meta.zcml gets included into the top-level site.zcml file.  This is done
+by placing into your buildout.cfg file for your Zope2_instance part the
+following::
+
+    zcml += tau.selectorstrings-meta
+
+This causes the plone.recipe.zope2instance recipe to create a 'slug' file
+under your parts/Zope2_instance/etc/package-includes/ that does nothing but
+include your tau/selectorstrings/meta.zcml file.  This inclusion happens
+because of the following directive automatically placed into your
+etc/site.zcml file::
+
+    <include files="package-includes/*-meta.zcml" />
